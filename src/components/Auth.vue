@@ -14,9 +14,8 @@
 <script>
 import firebase from 'firebase';
 import firebaseui from 'firebaseui';
-import {
-    config
-} from '../helpers/firebaseConfig';
+import {config} from '../helpers/firebaseConfig';
+
 
 export default {
     data: function () {
@@ -34,8 +33,7 @@ export default {
             }).then(
                 (user) => {
                     console.log(user);
-                    localStorage.setItem('tokennya', user.data.token);
-                    console.log('token tersimpan: ' + localStorage.getItem('tokennya'));
+                    localStorage.setItem('token', user.data.token);
                     this.$router.push('main')
                 },
                 (err) => {
@@ -43,18 +41,7 @@ export default {
                 }
             );
         }
-        /* login: function () {
-            this.$http.post('https://dummy-hash.azurewebsites.net/auth/login', {
-                email: this.email,
-                password: this.password
-            }).then(
-                function (user) {
-                    localStorage.setItem('tokennya', user.data.token);
-                    console.log('token tersimpan: ' + localStorage.getItem('tokennya'));
-                }).catch(function (error) {
-                console.log('error : ' + error.response);
-            })
-        } */
+
     },
     mounted() {
         var vue = this;
@@ -72,21 +59,21 @@ export default {
                         password: ''
                     }).then(
                         (user) => {
-                            console.log(user);
+                            window.localStorage.setItem('token', user.data.token);
                         },
                         (err) => {
                             console.log('error: ' + err.response)
                         }
-                    );
-
-                    return true;                  
+                    ).then(() => {
+                        vue.$router.replace('/main')
+                    })
                 },
                 signInFailure: function (error) {
                     //return handleUIError(error);
                     console.log(error);
                 }
             },
-            signInSuccessUrl: '/',
+
             signInOptions: [
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                 {
@@ -106,7 +93,7 @@ export default {
         }
         ui.start('#firebaseui-auth-container', uiConfig);
     },
-    
+
 }
 </script>
 
